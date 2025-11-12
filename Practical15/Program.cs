@@ -180,10 +180,20 @@ namespace Pract15
     {
         public decimal Balance { get; set; }
 
-        public void Deposit(int sum) => Balance += sum;
-        public void Withdraw(int sum) { if (sum <= Balance) Balance -= sum; else Console.WriteLine("Недостаточно средств"); }
-        public void Transfer(int sum, BankAccount accToTransfer) 
+        public void Deposit(int sum)
         {
+            if (sum <= 0) { Console.WriteLine("Сумма должна быть не меньше 0!"); return; }
+            Balance += sum; 
+        }
+        public void Withdraw(int sum) 
+        { 
+            if(sum <= 0) { Console.WriteLine("Сумма должна быть не меньше 0!"); return; }
+            if (sum <= Balance) Balance -= sum; 
+            else Console.WriteLine("Недостаточно средств"); 
+        }
+        public void Transfer(int sum, BankAccount accToTransfer)
+        {
+            if (sum <= 0) { Console.WriteLine("Сумма должна быть не меньше 0!"); return; }
             if (sum <= Balance)
             {
                 Balance -= sum;
