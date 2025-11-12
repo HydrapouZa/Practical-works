@@ -24,6 +24,36 @@ namespace Pract15
             fanEnable.Enable(false);
             ISetLevel lampLevel = lamp;
             lampLevel.SetLevel(30);
+
+            Phone phone = new Phone(15000, 24);
+            Laptop laptop = new Laptop(30000);
+            IPrice laptopPrice = laptop;
+            IPrice phonePrice = phone;
+            IWarrantyPeriod phoneWarranty = phone;
+            Console.WriteLine($"Цена телефона: {phonePrice.GetPrice()}. Гарантия: {phoneWarranty.GetWarrantyPeriodInMonths()} месяца.");
+            Console.WriteLine($"Цена ноутбука: {laptopPrice.GetPrice()}.");
+
+            Warrior warrior = new Warrior();
+            IAttack warriorAttack = warrior;
+            Wizard wizard = new Wizard();
+            IAttack wizardAttack = wizard;
+            IHeal wizardHeal = wizard;
+            warriorAttack.Attack();
+            wizardAttack.Attack();
+            wizardHeal.Heal();
+
+            BankAccount vasya = new BankAccount();
+            IDepositOrWithdraw vasyaDep = vasya;
+            ITransferToAnotherAccount vasyaTrans = vasya;
+            vasyaDep.Deposit(7000);
+            BankAccount petya = new BankAccount();
+            IDepositOrWithdraw petyaDep = petya;
+            petyaDep.Deposit(7000);
+            vasyaTrans.Transfer(1500, petya);
+            petyaDep.Withdraw(1000);
+            Console.WriteLine("Баланс Васи: " + vasya.Balance);
+            Console.WriteLine("Баланс Пети: " + petya.Balance);
+
             Console.ReadKey();
         }
     }
@@ -100,4 +130,67 @@ namespace Pract15
     }
     
     // задание 3
+
+    interface IPrice { int GetPrice(); }
+    interface IWarrantyPeriod { int GetWarrantyPeriodInMonths(); }
+    
+    class Phone : IPrice, IWarrantyPeriod
+    {
+        public int Price { get; set; }
+        public int WarrantyPeriodInMonths { get; set; }
+        public Phone(int price, int warrantyPeriod)
+        {
+            Price = price;
+            WarrantyPeriodInMonths = warrantyPeriod;
+        }
+        public int GetWarrantyPeriodInMonths() { return WarrantyPeriodInMonths; }
+        public int GetPrice() { return Price; }
+    }
+    class Laptop : IPrice
+    {
+        public int Price { get; set; }
+        public Laptop(int price)
+        {
+            Price = price;
+        }
+        public int GetPrice() { return Price; }
+    }
+
+    // Задание 4
+
+    interface IAttack { void Attack(); }
+    interface IHeal { void Heal(); }
+
+    class Warrior : IAttack
+    {
+        public void Attack() => Console.WriteLine("Воин атакует");
+    }
+    class Wizard: IAttack, IHeal
+    {
+        public void Attack() => Console.WriteLine("Маг атакует");
+        public void Heal() => Console.WriteLine("Маг лечит");
+    }
+
+    // Задание 5
+
+    interface IDepositOrWithdraw { void Deposit(int sum); void Withdraw(int sum); }
+    interface ITransferToAnotherAccount { void Transfer(int sum, BankAccount accToTransfer); }
+
+    class BankAccount : IDepositOrWithdraw, ITransferToAnotherAccount
+    {
+        public decimal Balance { get; set; }
+
+        public void Deposit(int sum) => Balance += sum;
+        public void Withdraw(int sum) { if (sum <= Balance) Balance -= sum; else Console.WriteLine("Недостаточно средств"); }
+        public void Transfer(int sum, BankAccount accToTransfer) 
+        {
+            if (sum <= Balance)
+            {
+                Balance -= sum;
+                IDepositOrWithdraw Itrans = accToTransfer;
+                Itrans.Deposit(sum);
+            }
+            else Console.WriteLine("Недостаточно средств"); 
+        }
+    }
 }
