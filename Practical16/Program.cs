@@ -105,9 +105,24 @@ namespace Pract16
 
         public override string ToString()
         {
-            return $"{City} {Temperature.ToString() ?? "Нет данных"}"; 
+            var t = Temperature ?? "";
+            return $"{City} {Temperature ?? 0}"; 
         }
     }
 
-    // 
+    // Задание 5
+
+    enum EmployeeStatus { Active, OnLieave, Terminated}
+    class Employee
+    {
+        public string Name;
+        public DateTime? HireDate;
+        public EmployeeStatus Status;
+
+        public int GetYearsWorked()
+        {
+
+            return DateTime.Now.Year - HireDate.Year;
+        }
+    }
 }
